@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil de Mascota</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      max-width: 420px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .foto-wrap {
+      position: relative;
+      height: 300px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      overflow: hidden;
+    }
+
+    .foto-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .foto-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+
+    .badge-estado {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .body {
+      padding: 24px 24px 32px;
+    }
+
+    .nombre-bloque {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .nombre {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #1a1a2e;
+      line-height: 1;
+    }
+
+    .emoji-genero {
+      font-size: 22px;
+    }
+
+    .raza {
+      color: #888;
+      font-size: 15px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 18px 0;
+    }
+
+    .grid-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .info-item {
+      background: #f8f9ff;
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .info-label {
+      font-size: 11px;
+      color: #aaa;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a1a2e;
+    }
+
+    .seccion-titulo {
+      font-size: 12px;
+      color: #aaa;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .descripcion {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .vacunas-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .vacuna-tag {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .info-medica {
+      background: #fff8e1;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 14px;
+      color: #5d4037;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .pedigree-wrap {
+      background: #f3e5f5;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 14px;
+      color: #4a148c;
+      margin-bottom: 18px;
+    }
+
+    .precio-wrap {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .precio-label {
+      color: rgba(255,255,255,0.8);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .precio-valor {
+      color: white;
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .btn-contacto {
+      display: block;
+      width: 100%;
+      background: #25D366;
+      color: white;
+      text-align: center;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-contacto:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37,211,102,0.4);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 16px;
+      color: #ccc;
+      font-size: 12px;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 8px;
+    }
+
+    .oculto { display: none !important; }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+      font-size: 16px;
+    }
+
+    .error-msg {
+      text-align: center;
+      padding: 60px 20px;
+      color: #e57373;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="loading" id="loading">🐾 Cargando perfil...</div>
+
+  <div id="contenido" class="oculto">
+    <div class="foto-wrap">
+      <img id="foto" src="" alt="Foto de la mascota" style="display:none"/>
+      <div class="foto-placeholder" id="foto-placeholder">🐶</div>
+      <div class="badge-estado" id="badge-estado" style="display:none"></div>
+    </div>
+
+    <div class="body">
+      <div class="nombre-bloque">
+        <span class="nombre" id="nombre"></span>
+        <span class="emoji-genero" id="emoji-genero"></span>
+      </div>
+      <div class="raza" id="raza"></div>
+
+      <div class="grid-info">
+        <div class="info-item" id="item-edad" style="display:none">
+          <div class="info-label">Edad</div>
+          <div class="info-value" id="edad"></div>
+        </div>
+        <div class="info-item" id="item-sexo" style="display:none">
+          <div class="info-label">Sexo</div>
+          <div class="info-value" id="sexo"></div>
+        </div>
+        <div class="info-item" id="item-dueno" style="display:none">
+          <div class="info-label">Dueño</div>
+          <div class="info-value" id="dueno"></div>
+        </div>
+        <div class="info-item" id="item-criadero" style="display:none">
+          <div class="info-label">Criadero</div>
+          <div class="info-value" id="criadero"></div>
+        </div>
+      </div>
+
+      <div id="wrap-descripcion" style="display:none">
+        <div class="seccion-titulo">Sobre mí</div>
+        <div class="descripcion" id="descripcion"></div>
+      </div>
+
+      <div id="wrap-vacunas" style="display:none">
+        <div class="divider"></div>
+        <div class="seccion-titulo">Vacunas</div>
+        <div class="vacunas-wrap" id="vacunas"></div>
+      </div>
+
+      <div class="info-medica oculto" id="wrap-medica">
+        <strong>🏥 Info médica:</strong><br/>
+        <span id="medica"></span>
+      </div>
+
+      <div class="pedigree-wrap oculto" id="wrap-pedigree">
+        <strong>🏆 Pedigree:</strong><br/>
+        <span id="pedigree"></span>
+      </div>
+
+      <div class="precio-wrap oculto" id="wrap-precio">
+        <div class="precio-label">Precio</div>
+        <div class="precio-valor" id="precio"></div>
+      </div>
+
+      <div id="wrap-extra" style="display:none">
+        <div class="divider"></div>
+        <div class="seccion-titulo">Información adicional</div>
+        <div class="descripcion" id="extra"></div>
+      </div>
+
+      <a class="btn-contacto oculto" id="btn-contacto" href="#" target="_blank">
+        💬 Contactar por WhatsApp
+      </a>
+    </div>
+
+    <div class="footer">🐾 Perfil creado con llavero NFC · Crecimiento Digital</div>
+  </div>
+
+  <div class="error-msg oculto" id="error">❌ No se encontró el perfil de esta mascota.</div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCU3rSBWP5HHzdvxxftnuYGNT4zkv5bJWE",
+    authDomain: "llaveros-nfc.firebaseapp.com",
+    projectId: "llaveros-nfc",
+    storageBucket: "llaveros-nfc.firebasestorage.app",
+    messagingSenderId: "786314693246",
+    appId: "1:786314693246:web:b14c9a84481b817dfaa62f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    document.getElementById("loading").classList.add("oculto");
+    document.getElementById("error").classList.remove("oculto");
+  } else {
+    const ref = doc(db, "mascotas", id);
+    const snap = await getDoc(ref);
+
+    document.getElementById("loading").classList.add("oculto");
+
+    if (!snap.exists()) {
+      document.getElementById("error").classList.remove("oculto");
+    } else {
+      const d = snap.data();
+      document.getElementById("contenido").classList.remove("oculto");
+
+      // Foto
+      if (d.foto) {
+        const img = document.getElementById("foto");
+        img.src = d.foto;
+        img.style.display = "block";
+        document.getElementById("foto-placeholder").style.display = "none";
+      }
+
+      // Nombre
+      document.getElementById("nombre").textContent = d.nombre || "Sin nombre";
+      document.getElementById("raza").textContent = d.raza || "";
+
+      // Género emoji
+      if (d.sexo) {
+        document.getElementById("emoji-genero").textContent = d.sexo === "Macho" ? "♂️" : "♀️";
+      }
+
+      // Edad
+      if (d.edad) {
+        document.getElementById("edad").textContent = d.edad;
+        document.getElementById("item-edad").style.display = "block";
+      }
+
+      // Sexo
+      if (d.sexo) {
+        document.getElementById("sexo").textContent = d.sexo;
+        document.getElementById("item-sexo").style.display = "block";
+      }
+
+      // Dueño
+      if (d.dueno) {
+        document.getElementById("dueno").textContent = d.dueno;
+        document.getElementById("item-dueno").style.display = "block";
+      }
+
+      // Criadero
+      if (d.criadero) {
+        document.getElementById("criadero").textContent = d.criadero;
+        document.getElementById("item-criadero").style.display = "block";
+      }
+
+      // Descripción
+      if (d.descripcion) {
+        document.getElementById("descripcion").textContent = d.descripcion;
+        document.getElementById("wrap-descripcion").style.display = "block";
+      }
+
+      // Vacunas
+      if (d.vacunas) {
+        const lista = d.vacunas.split(",").map(v => v.trim()).filter(Boolean);
+        if (lista.length) {
+          const wrap = document.getElementById("vacunas");
+          lista.forEach(v => {
+            const tag = document.createElement("span");
+            tag.className = "vacuna-tag";
+            tag.textContent = "✓ " + v;
+            wrap.appendChild(tag);
+          });
+          document.getElementById("wrap-vacunas").style.display = "block";
+        }
+      }
+
+      // Info médica
+      if (d.medica) {
+        document.getElementById("medica").textContent = d.medica;
+        document.getElementById("wrap-medica").classList.remove("oculto");
+      }
+
+      // Pedigree
+      if (d.pedigree) {
+        document.getElementById("pedigree").textContent = d.pedigree;
+        document.getElementById("wrap-pedigree").classList.remove("oculto");
+      }
+
+      // Precio
+      if (d.precio) {
+        document.getElementById("precio").textContent = d.precio;
+        document.getElementById("wrap-precio").classList.remove("oculto");
+      }
+
+      // Info adicional / extra
+      if (d.extra) {
+        document.getElementById("extra").textContent = d.extra;
+        document.getElementById("wrap-extra").style.display = "block";
+      }
+
+      // WhatsApp
+      if (d.telefono) {
+        const num = d.telefono.replace(/\D/g, "");
+        const msg = encodeURIComponent(`Hola! Vi el perfil de ${d.nombre || "la mascota"} y quiero más información.`);
+        const btn = document.getElementById("btn-contacto");
+        btn.href = `https://wa.me/${num}?text=${msg}`;
+        btn.classList.remove("oculto");
+      }
+
+      // Badge estado (si tiene precio = en venta, si no = mascota personal)
+      const badge = document.getElementById("badge-estado");
+      if (d.precio) {
+        badge.textContent = "🏷️ En venta";
+        badge.style.display = "block";
+      }
+
+      // Título de la página
+      document.title = d.nombre ? `${d.nombre} 🐾` : "Perfil de Mascota";
+    }
+  }
+</script>
+</body>
+</html>

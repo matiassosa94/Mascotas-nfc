@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cargar datos de mascota</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 0 24px;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #1a1a2e;
+    }
+
+    .header p {
+      color: #888;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #667eea;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input[type=text],
+    input[type=tel],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      color: #1a1a2e;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #667eea;
+      background: white;
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    .foto-area {
+      border: 2px dashed #ddd;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .foto-area:hover { border-color: #667eea; background: #f8f9ff; }
+    .foto-area.drag { border-color: #667eea; background: #f0f4ff; }
+
+    .foto-area input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .foto-area .icono { font-size: 36px; margin-bottom: 8px; }
+    .foto-area p { color: #aaa; font-size: 14px; font-weight: 600; }
+
+    #preview-foto {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    .btn-guardar {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-guardar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102,126,234,0.4);
+    }
+
+    .btn-guardar:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .resultado {
+      display: none;
+      background: white;
+      border-radius: 24px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin-top: 16px;
+    }
+
+    .resultado h2 { font-size: 22px; color: #1a1a2e; margin-bottom: 8px; }
+    .resultado p { color: #888; font-size: 14px; margin-bottom: 20px; }
+
+    .url-box {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      color: #667eea;
+      word-break: break-all;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .btn-copiar {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      margin-bottom: 10px;
+    }
+
+    .btn-ver {
+      display: block;
+      color: #667eea;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+
+    .error-box {
+      background: #ffebee;
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #c62828;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .progress {
+      font-size: 14px;
+      color: #667eea;
+      font-weight: 700;
+      margin-top: 8px;
+      display: none;
+      text-align: center;
+    }
+
+    /* Login */
+    .login-wrap {
+      max-width: 380px;
+      margin: 60px auto 0;
+      background: white;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .login-wrap h2 { font-size: 22px; color: #1a1a2e; margin-bottom: 6px; }
+    .login-wrap p { color: #888; font-size: 14px; margin-bottom: 24px; }
+
+    .login-wrap input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Nunito', sans-serif;
+      outline: none;
+      text-align: center;
+      letter-spacing: 4px;
+      margin-bottom: 14px;
+    }
+
+    .login-wrap input:focus { border-color: #667eea; }
+
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .login-error {
+      color: #e53935;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .oculto { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div style="font-size:48px;margin-bottom:12px">🔑</div>
+  <h2>Acceso revendedor</h2>
+  <p>Ingresá el código de tu llavero para continuar</p>
+  <input type="text" id="input-codigo" placeholder="Ej: ABC123" maxlength="20" />
+  <button class="btn-login" onclick="verificarCodigo()">Entrar</button>
+  <div class="login-error" id="login-error">❌ Código incorrecto. Verificá el código de tu llavero.</div>
+</div>
+
+<!-- FORMULARIO -->
+<div class="container oculto" id="formulario-wrap">
+  <div class="header">
+    <div style="font-size:40px">🐾</div>
+    <h1>Cargá los datos</h1>
+    <p>Completá la información de la mascota</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📸 Foto</div>
+    <div class="foto-area" id="foto-area">
+      <input type="file" id="input-foto" accept="image/*" onchange="previsualizarFoto(event)"/>
+      <img id="preview-foto" src="" alt="preview"/>
+      <div id="foto-placeholder">
+        <div class="icono">📷</div>
+        <p>Tocá para subir una foto</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🐶 Datos básicos</div>
+
+    <div class="field">
+      <label>Nombre de la mascota *</label>
+      <input type="text" id="nombre" placeholder="Ej: Max, Luna, Coco..."/>
+    </div>
+
+    <div class="field">
+      <label>Raza</label>
+      <input type="text" id="raza" placeholder="Ej: Golden Retriever, Mestizo..."/>
+    </div>
+
+    <div class="field">
+      <label>Edad</label>
+      <input type="text" id="edad" placeholder="Ej: 2 años, 6 meses..."/>
+    </div>
+
+    <div class="field">
+      <label>Sexo</label>
+      <select id="sexo">
+        <option value="">— Seleccionar —</option>
+        <option value="Macho">Macho</option>
+        <option value="Hembra">Hembra</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">👤 Contacto</div>
+
+    <div class="field">
+      <label>Nombre del dueño / criadero</label>
+      <input type="text" id="dueno" placeholder="Ej: Juan García / Criadero Los Pinos"/>
+    </div>
+
+    <div class="field">
+      <label>Teléfono WhatsApp</label>
+      <input type="tel" id="telefono" placeholder="Ej: 5491112345678"/>
+      <div class="hint">Con código de país, sin +. Ej: 5491112345678</div>
+    </div>
+
+    <div class="field">
+      <label>Criadero (opcional)</label>
+      <input type="text" id="criadero" placeholder="Nombre del criadero si aplica"/>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📝 Descripción</div>
+
+    <div class="field">
+      <label>Sobre la mascota</label>
+      <textarea id="descripcion" placeholder="Contá algo sobre la mascota, su personalidad, historia..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Vacunas (separadas por coma)</label>
+      <input type="text" id="vacunas" placeholder="Ej: Antirrábica, Quíntuple, Parvovirus"/>
+    </div>
+
+    <div class="field">
+      <label>Información médica</label>
+      <textarea id="medica" placeholder="Alergias, medicación, condiciones especiales..." style="min-height:70px"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🏆 Info adicional</div>
+
+    <div class="field">
+      <label>Pedigree</label>
+      <textarea id="pedigree" placeholder="Información de pedigree, línea genética..." style="min-height:70px"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Precio (dejá vacío si no está en venta)</label>
+      <input type="text" id="precio" placeholder="Ej: USD 500 / $150.000"/>
+    </div>
+
+    <div class="field">
+      <label>Información extra que quieras agregar</label>
+      <textarea id="extra" placeholder="Cualquier dato adicional que quieras mostrar..."></textarea>
+    </div>
+  </div>
+
+  <button class="btn-guardar" id="btn-guardar" onclick="guardarDatos()">
+    💾 Guardar perfil
+  </button>
+
+  <div class="progress" id="progress">⏳ Subiendo foto y guardando...</div>
+  <div class="error-box" id="error-box"></div>
+
+  <div class="resultado" id="resultado">
+    <div style="font-size:48px;margin-bottom:12px">✅</div>
+    <h2>¡Perfil guardado!</h2>
+    <p>Esta es la URL del llavero. Podés compartirla o ya funciona escaneando el NFC.</p>
+    <div class="url-box" id="url-resultado"></div>
+    <button class="btn-copiar" onclick="copiarURL()">📋 Copiar URL</button>
+    <a class="btn-ver" id="link-ver" href="#" target="_blank">👁 Ver perfil →</a>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCU3rSBWP5HHzdvxxftnuYGNT4zkv5bJWE",
+    authDomain: "llaveros-nfc.firebaseapp.com",
+    projectId: "llaveros-nfc",
+    storageBucket: "llaveros-nfc.firebasestorage.app",
+    messagingSenderId: "786314693246",
+    appId: "1:786314693246:web:b14c9a84481b817dfaa62f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const CLOUDINARY_CLOUD = "di4rc9li1";
+  const CLOUDINARY_UPLOAD_PRESET = "mascotas_nfc"; // lo creamos abajo
+
+  // Códigos válidos de llaveros — VOS los controlás
+  // Formato: "CODIGO": "id_en_firestore"
+  const CODIGOS = {
+    "LLAVE01": "llave01",
+    "LLAVE02": "llave02",
+    "LLAVE03": "llave03",
+    "LLAVE04": "llave04",
+    "LLAVE05": "llave05",
+    "LLAVE06": "llave06",
+    "LLAVE07": "llave07",
+    "LLAVE08": "llave08",
+    "LLAVE09": "llave09",
+    "LLAVE10": "llave10",
+  };
+
+  let idActual = null;
+  let fotoArchivo = null;
+
+  window.verificarCodigo = function() {
+    const input = document.getElementById("input-codigo").value.trim().toUpperCase();
+    if (CODIGOS[input]) {
+      idActual = CODIGOS[input];
+      document.getElementById("login-wrap").classList.add("oculto");
+      document.getElementById("formulario-wrap").classList.remove("oculto");
+      cargarDatosExistentes();
+    } else {
+      document.getElementById("login-error").style.display = "block";
+    }
+  };
+
+  async function cargarDatosExistentes() {
+    try {
+      const snap = await getDoc(doc(db, "mascotas", idActual));
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.nombre) document.getElementById("nombre").value = d.nombre;
+        if (d.raza) document.getElementById("raza").value = d.raza;
+        if (d.edad) document.getElementById("edad").value = d.edad;
+        if (d.sexo) document.getElementById("sexo").value = d.sexo;
+        if (d.dueno) document.getElementById("dueno").value = d.dueno;
+        if (d.telefono) document.getElementById("telefono").value = d.telefono;
+        if (d.criadero) document.getElementById("criadero").value = d.criadero;
+        if (d.descripcion) document.getElementById("descripcion").value = d.descripcion;
+        if (d.vacunas) document.getElementById("vacunas").value = d.vacunas;
+        if (d.medica) document.getElementById("medica").value = d.medica;
+        if (d.pedigree) document.getElementById("pedigree").value = d.pedigree;
+        if (d.precio) document.getElementById("precio").value = d.precio;
+        if (d.extra) document.getElementById("extra").value = d.extra;
+        if (d.foto) {
+          document.getElementById("preview-foto").src = d.foto;
+          document.getElementById("preview-foto").style.display = "block";
+          document.getElementById("foto-placeholder").style.display = "none";
+        }
+      }
+    } catch(e) {}
+  }
+
+  window.previsualizarFoto = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    fotoArchivo = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById("preview-foto").src = ev.target.result;
+      document.getElementById("preview-foto").style.display = "block";
+      document.getElementById("foto-placeholder").style.display = "none";
+    };
+    reader.readAsDataURL(file);
+  };
+
+  async function subirFotoCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("folder", "mascotas_nfc");
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if (data.secure_url) return data.secure_url;
+    throw new Error("Error subiendo foto");
+  }
+
+  window.guardarDatos = async function() {
+    const nombre = document.getElementById("nombre").value.trim();
+    if (!nombre) {
+      mostrarError("El nombre de la mascota es obligatorio.");
+      return;
+    }
+
+    const btn = document.getElementById("btn-guardar");
+    btn.disabled = true;
+    document.getElementById("progress").style.display = "block";
+    document.getElementById("error-box").style.display = "none";
+
+    try {
+      let fotoURL = document.getElementById("preview-foto").src || "";
+      // Si hay foto nueva, subirla
+      if (fotoArchivo) {
+        fotoURL = await subirFotoCloudinary(fotoArchivo);
+      }
+
+      const datos = {
+        nombre,
+        raza: document.getElementById("raza").value.trim(),
+        edad: document.getElementById("edad").value.trim(),
+        sexo: document.getElementById("sexo").value,
+        dueno: document.getElementById("dueno").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        criadero: document.getElementById("criadero").value.trim(),
+        descripcion: document.getElementById("descripcion").value.trim(),
+        vacunas: document.getElementById("vacunas").value.trim(),
+        medica: document.getElementById("medica").value.trim(),
+        pedigree: document.getElementById("pedigree").value.trim(),
+        precio: document.getElementById("precio").value.trim(),
+        extra: document.getElementById("extra").value.trim(),
+        foto: fotoURL,
+        actualizado: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "mascotas", idActual), datos);
+
+      // Construir URL del perfil
+      const base = window.location.href.replace("editar.html", "perfil.html");
+      const url = `${base}?id=${idActual}`;
+
+      document.getElementById("url-resultado").textContent = url;
+      document.getElementById("link-ver").href = url;
+      document.getElementById("resultado").style.display = "block";
+      document.getElementById("resultado").scrollIntoView({ behavior: "smooth" });
+
+    } catch(err) {
+      mostrarError("Ocurrió un error: " + err.message);
+    }
+
+    btn.disabled = false;
+    document.getElementById("progress").style.display = "none";
+  };
+
+  function mostrarError(msg) {
+    const box = document.getElementById("error-box");
+    box.textContent = "❌ " + msg;
+    box.style.display = "block";
+  }
+
+  window.copiarURL = function() {
+    const url = document.getElementById("url-resultado").textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector(".btn-copiar");
+      btn.textContent = "✅ ¡Copiado!";
+      setTimeout(() => btn.textContent = "📋 Copiar URL", 2000);
+    });
+  };
+
+  // Enter en el login
+  document.getElementById("input-codigo").addEventListener("keydown", e => {
+    if (e.key === "Enter") window.verificarCodigo();
+  });
+</script>
+
+</body>
+</html>
